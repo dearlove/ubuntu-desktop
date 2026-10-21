@@ -1,7 +1,7 @@
 # ubuntu-desktop
 Ubuntu based desktop for use in a docker container, built for [Kasm Workspaces](https://kasmweb.com/).
 
-Includes: Vivaldi, Anytype, RustDesk, Visual Studio Code and Claude Desktop (beta).
+Includes: Vivaldi, Anytype, RustDesk, Visual Studio Code, Claude Desktop (beta) and MusicBrainz Picard.
 
 ## Image
 

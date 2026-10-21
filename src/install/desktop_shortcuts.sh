@@ -6,7 +6,7 @@ shopt -s nullglob
 DESKTOP="$HOME/Desktop"
 mkdir -p "$DESKTOP"
 
-for pattern in vivaldi-stable anytype rustdesk code claude; do
+for pattern in vivaldi-stable anytype rustdesk code claude org.musicbrainz.Picard; do
   for f in /usr/share/applications/${pattern}*.desktop; do
     # Skip URL-handler helpers such as code-url-handler.desktop and rustdesk-link.desktop
     [[ "$f" == *url-handler* || "$f" == *-link.desktop ]] && continue

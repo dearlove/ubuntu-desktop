@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installs Vivaldi, Anytype, RustDesk, VS Code and Claude Desktop.
+# Installs Vivaldi, Anytype, RustDesk, VS Code, Claude Desktop and MusicBrainz Picard.
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
@@ -14,7 +14,7 @@ if [[ "$ARCH" != "amd64" ]]; then
 fi
 
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl gnupg jq
+apt-get install -y --no-install-recommends ca-certificates curl gnupg jq software-properties-common
 
 # Download the newest .deb from a GitHub repo's latest release whose name matches a regex.
 github_latest_deb() {
@@ -55,6 +55,9 @@ gpg --show-keys --with-colons "$KEYRINGS/claude-desktop-archive-keyring.asc" \
 echo "deb [arch=amd64,arm64 signed-by=$KEYRINGS/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main" \
   > /etc/apt/sources.list.d/claude-desktop.list
 
+# MusicBrainz Picard (official PPA; newer than the Ubuntu archive)
+add-apt-repository -y --no-update ppa:musicbrainz-developers/stable
+
 # --- GitHub release packages -------------------------------------------------
 
 github_latest_deb anyproto/anytype-ts '_amd64\.deb$' "$TMP/anytype.deb"
@@ -70,6 +73,7 @@ apt-get install -y --no-install-recommends \
   vivaldi-stable \
   code \
   claude-desktop \
+  picard \
   gnome-keyring \
   libsecret-1-0 \
   "$TMP/anytype.deb" \
