@@ -4,6 +4,8 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
 export DEBIAN_FRONTEND=noninteractive
+# Same reason as the curl wrapper in lib.sh: ride out transient mirror errors
+echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
 ARCH="$(dpkg --print-architecture)"
 KEYRINGS=/usr/share/keyrings
 TMP="$(mktemp -d)"
