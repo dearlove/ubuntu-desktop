@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Installs Vivaldi, Anytype, RustDesk, VS Code, Claude Desktop and MusicBrainz Picard.
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 export DEBIAN_FRONTEND=noninteractive
 ARCH="$(dpkg --print-architecture)"
@@ -80,22 +81,25 @@ apt-get install -y --no-install-recommends \
   "$TMP/rustdesk.deb"
 
 # Chromium/Electron apps can't use their sandbox inside an unprivileged
-# container, so launch them with --no-sandbox.
+# container, so launch them with --no-sandbox (the Dockerfile also sets
+# ELECTRON_DISABLE_SANDBOX as a backstop for the Electron apps).
 add_no_sandbox() {
-  local f
-  for f in "$@"; do
-    [[ -f "$f" ]] || continue
-    grep -q -- '--no-sandbox' "$f" && continue
-    sed -i -E 's#^(Exec=[^ ]+)#\1 --no-sandbox#' "$f"
-    echo "Patched $f"
+  local pkg f files
+  for pkg in "$@"; do
+    mapfile -t files < <(launchers_for "$pkg")
+    if [[ ${#files[@]} == 0 ]]; then
+      echo "WARNING: no launcher found for $pkg" >&2
+      continue
+    fi
+    for f in "${files[@]}"; do
+      grep -q -- '--no-sandbox' "$f" && continue
+      # Insert before the first field code (%U, %F, ...) or append if there is none
+      sed -i -E '/^Exec=/{/ %[A-Za-z]/{s/ %([A-Za-z])/ --no-sandbox %\1/;b};s/$/ --no-sandbox/}' "$f"
+      echo "Patched $f"
+    done
   done
 }
-shopt -s nullglob
-add_no_sandbox \
-  /usr/share/applications/vivaldi*.desktop \
-  /usr/share/applications/code*.desktop \
-  /usr/share/applications/anytype*.desktop \
-  /usr/share/applications/claude*.desktop
+add_no_sandbox vivaldi-stable code anytype claude-desktop
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /var/tmp/*

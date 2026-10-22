@@ -17,6 +17,10 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# Electron apps (VS Code, Claude, Anytype) can't use Chromium's sandbox in an
+# unprivileged container; this covers launches from a terminal as well as menus.
+ENV ELECTRON_DISABLE_SANDBOX=1
+
 COPY src/install/ $INST_SCRIPTS/custom/
 
 # GitHub token is optional; it only avoids API rate limits when looking up
