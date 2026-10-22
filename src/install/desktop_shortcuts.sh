@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Puts launchers for the installed apps on the default profile's desktop.
 set -euo pipefail
-shopt -s nullglob
+source "$(dirname "$0")/lib.sh"
 
 DESKTOP="$HOME/Desktop"
 mkdir -p "$DESKTOP"
 
-for pattern in vivaldi-stable anytype rustdesk code claude org.musicbrainz.Picard; do
-  for f in /usr/share/applications/${pattern}*.desktop; do
-    # Skip URL-handler helpers such as code-url-handler.desktop and rustdesk-link.desktop
-    [[ "$f" == *url-handler* || "$f" == *-link.desktop ]] && continue
+for pkg in vivaldi-stable anytype rustdesk code claude-desktop picard; do
+  while read -r f; do
+    [[ -n "$f" ]] || continue
+    # Skip hidden helper entries such as URL handlers
+    grep -q '^NoDisplay=true' "$f" && continue
     cp "$f" "$DESKTOP/"
     chmod +x "$DESKTOP/$(basename "$f")"
     echo "Added $(basename "$f") to desktop"
-  done
+  done < <(launchers_for "$pkg")
 done
