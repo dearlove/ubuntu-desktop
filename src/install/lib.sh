@@ -14,3 +14,9 @@ launchers_for() {
   [[ -n "$found" ]] && echo "$found"
   return 0
 }
+
+# Vendor servers occasionally rate-limit (429) or fail (5xx) CI runners;
+# retry with curl's exponential backoff, which also honours Retry-After.
+curl() {
+  command curl --retry 8 --retry-connrefused "$@"
+}
