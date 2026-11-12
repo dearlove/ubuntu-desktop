@@ -16,3 +16,8 @@ for pkg in vivaldi-stable anytype rustdesk code claude-desktop picard; do
     echo "Added $(basename "$f") to desktop"
   done < <(launchers_for "$pkg")
 done
+
+# Herdr isn't a deb, so its launcher is added by name
+cp /usr/share/applications/herdr-app.desktop "$DESKTOP/"
+chmod +x "$DESKTOP/herdr-app.desktop"
+echo "Added herdr-app.desktop to desktop"

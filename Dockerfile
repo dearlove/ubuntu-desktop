@@ -1,4 +1,5 @@
-# Kasm Workspaces desktop image with Vivaldi, Anytype, RustDesk, VS Code and Claude.
+# Kasm Workspaces desktop image with Vivaldi, Anytype, RustDesk, VS Code, Claude,
+# MusicBrainz Picard and Herdr.
 #
 # Built on Kasm's own "core" image, which provides KasmVNC, the XFCE desktop,
 # audio/upload/download/printing plumbing and the startup scripts Kasm expects.
@@ -27,6 +28,7 @@ COPY src/install/ $INST_SCRIPTS/custom/
 # the latest Anytype and RustDesk releases.
 RUN --mount=type=secret,id=github_token,required=false \
     bash $INST_SCRIPTS/custom/install_apps.sh \
+    && bash $INST_SCRIPTS/custom/install_herdr.sh \
     && bash $INST_SCRIPTS/custom/desktop_shortcuts.sh \
     && rm -rf $INST_SCRIPTS/custom
 

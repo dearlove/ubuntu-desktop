@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Installs Vivaldi, Anytype, RustDesk, VS Code, Claude Desktop and MusicBrainz Picard.
+# Installs Vivaldi, Anytype, RustDesk, VS Code, Claude Desktop and MusicBrainz Picard,
+# plus the system libraries Herdr needs (install_herdr.sh installs Herdr itself).
 set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
@@ -71,7 +72,8 @@ github_latest_deb rustdesk/rustdesk 'x86_64\.deb$' "$TMP/rustdesk.deb"
 apt-get update
 # Recommends are skipped to keep Claude's QEMU/KVM (Cowork) stack out; Cowork
 # cannot run inside a Kasm container anyway. gnome-keyring lets Claude and
-# VS Code store sign-ins.
+# VS Code store sign-ins. Herdr renders with Vulkan (Mesa's software driver
+# when there's no GPU) and reaches other machines over ssh.
 apt-get install -y --no-install-recommends \
   vivaldi-stable \
   code \
@@ -79,6 +81,10 @@ apt-get install -y --no-install-recommends \
   picard \
   gnome-keyring \
   libsecret-1-0 \
+  libvulkan1 \
+  mesa-vulkan-drivers \
+  libxkbcommon-x11-0 \
+  openssh-client \
   "$TMP/anytype.deb" \
   "$TMP/rustdesk.deb"
 
