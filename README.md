@@ -1,7 +1,8 @@
 # ubuntu-desktop
 Ubuntu based desktop for use in a docker container, built for [Kasm Workspaces](https://kasmweb.com/).
 
-Includes: Vivaldi, Anytype, RustDesk, Visual Studio Code, Claude Desktop (beta) and MusicBrainz Picard.
+Includes: Vivaldi, Anytype, RustDesk, Visual Studio Code, Claude Desktop (beta), MusicBrainz Picard
+and [Herdr](https://herdr.dev/) (herdr-app with herdr-core).
 
 ## Image
 
@@ -39,4 +40,10 @@ Admin → Workspaces → Add Workspace:
 - Vivaldi, VS Code, Anytype and Claude are launched with `--no-sandbox`, since Chromium's
   sandbox can't run in an unprivileged container.
 - Claude's Cowork feature needs KVM and won't work inside Kasm; Chat and Claude Code do.
+- Herdr connects to other machines (such as a Mac) over SSH, offering the hosts in
+  `~/.ssh/config`. The Mac needs Remote Login turned on. Use a persistent profile, or
+  re-add your key and config each session, since a fresh session's home starts empty.
+- Herdr and herdr-core update themselves inside the session; each rebuild also ships
+  the latest release.
+- Herdr renders with Mesa's software Vulkan driver unless the agent passes a GPU through.
 - Only `linux/amd64` is built.
